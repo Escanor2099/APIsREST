@@ -75,7 +75,7 @@ public class AlumnoController {
 	}
 	
 	@GetMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity <?> retrieve(@PathVariable("matricula") Integer matricula) {
+	public ResponseEntity <?> retrieve(@PathVariable ("matricula")  @Valid Integer matricula) {
 		log.info("Buscando al alumno con matricula "+matricula + "Le mando la orden a alumnoService");
 		
 		Alumno alumno = alumnoService.retrieveByMatricula(matricula);
@@ -101,7 +101,7 @@ public class AlumnoController {
 	 */
 
 	@PutMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@PathVariable("matricula") Integer matricula,@RequestBody Alumno alumnoActualizado){
+	public ResponseEntity<?> update(@PathVariable("matricula") @Valid Integer matricula, @RequestBody @Valid Alumno alumnoActualizado){
 		log.info("Le digo a AlumnoService que haga una actualizacion con estos nuevos datos: " + alumnoActualizado + " con la matricula: " + matricula);
 		Alumno alumno = alumnoService.update(matricula, alumnoActualizado);
 		if(alumno != null) {
@@ -118,7 +118,7 @@ public class AlumnoController {
 	 * @return un NOT_FOUND si es que no se encontraba
 	 */
 	@DeleteMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> delete(@PathVariable("matricula") Integer matricula) {
+	public ResponseEntity<?> delete(@PathVariable("matricula") @Valid Integer matricula) {
 		log.info("Borrando al alumno con matricula "+matricula + "Le paso la orden a AlumnoService");
 		//Alumno alumno = alumnoRespository.get(matricula);
 		Alumno alumno = alumnoService.delete(matricula);
