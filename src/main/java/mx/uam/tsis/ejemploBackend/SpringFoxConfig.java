@@ -32,7 +32,7 @@ public class SpringFoxConfig {
 	      "Ejemplo de API del curso TSIS", 
 	      "API TOS", 
 	      "Terms of service", 
-	      new Contact("Humberto Cervantes", "www.humbertocervantes.net", "hcm@xanum.uam.mx"), 
+	      new Contact("Juan Aarón", "", "aioriaagneto11@gmail.com"), 
 	      "License of API", "API license URL", Collections.emptyList());
     }
 }

@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 /**
@@ -16,10 +17,17 @@ import lombok.Data;
 @Builder
 @Data
 public class Alumno {
+	
 	@NotNull
+	@ApiModelProperty(notes = "Matricula del alumno", required = true)
 	private Integer matricula;
+	
+	
 	@NotEmpty
+	@ApiModelProperty(notes = "Nombre del alumno", required = true)
 	private String nombre;
+	
 	@NotBlank                       
+	@ApiModelProperty(notes = "Carrera del alumno", required = true)
 	private String carrera;
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import mx.uam.tsis.ejemploBackend.negocio.AlumnoService;
 import mx.uam.tsis.ejemploBackend.negocio.modelo.Alumno;
@@ -37,16 +38,19 @@ import mx.uam.tsis.ejemploBackend.negocio.modelo.Alumno;
  */
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("/v1")
-@Slf4j
+@RequestMapping("/v2") // Versionamiento
+@Slf4j //logging
 public class AlumnoController {
 	
 	@Autowired
 	private AlumnoService alumnoService; 
 	
-	
+	@ApiOperation(
+			value = "Nos permite crear un nuevo alumno",
+			notes = "Al crear al nuevo alumno la matricula debe ser única"
+			)// Documentación del api
 	@PostMapping(path = "/alumnos", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> create(@RequestBody @Valid Alumno nuevoAlumno) {
+	public ResponseEntity<?> create(@RequestBody @Valid Alumno nuevoAlumno) {   //validaciones
 		
 		log.info("REcibi llamada a create(claseAlumnoControllr) con" + nuevoAlumno + "se los paso al metodo creat()de la clase ALumnoService");
 		
