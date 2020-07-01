@@ -64,6 +64,7 @@ public class AlumnoService {
 		if(!alumnoOpt.isPresent()) {
 			log.info("Se encontro al alumno con la matricula: " + matricula);
 			return alumnoRepository.findById(matricula);
+			//return alumnoRepository.findById(matricula);
 			
 		}else {
 			return null;
@@ -83,10 +84,10 @@ public class AlumnoService {
 		log.info("Antes de actualizar verifico que el alumno con matricula: " + matricula + " existe");
 		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
 		
-		Alumno alumno = alumnoOpt.get();
+		//Alumno alumno = alumnoOpt.get();
 		if (alumnoOpt.isPresent()) {
 			log.info("Si existe lo procedemos a aactualizar con los datos: " + alumnoActualizado);
-			return alumnoRepository.save(alumno);
+			return alumnoRepository.save(alumnoActualizado);
 		}else {
 			log.info("Si no existe entonces, null");
 			return null;
@@ -104,7 +105,7 @@ public class AlumnoService {
 		
 		if(alumnoOpt.isPresent()) {
 			log.info("Alumno con matricula: " + alumnoOpt + " procediendo a borrar");
-			alumnoRepository.delete(alumnoOpt.get());
+			alumnoRepository.deleteById(matricula);
 			return true;
 		} else {
 			return false;

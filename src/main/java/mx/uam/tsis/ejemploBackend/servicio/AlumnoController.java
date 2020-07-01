@@ -148,7 +148,7 @@ public class AlumnoController {
 		boolean retval;
 		//Alumno alumno = alumnoRespository.get(matricula);
 		retval = alumnoService.delete(matricula);
-		if(!retval) {
+		if(retval==true) {
 			return ResponseEntity.status(HttpStatus.OK).build();
 		}else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alumno con la matricula: " + matricula + " no encontrado ");
