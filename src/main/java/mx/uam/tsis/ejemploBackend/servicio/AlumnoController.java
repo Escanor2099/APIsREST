@@ -1,9 +1,7 @@
 package mx.uam.tsis.ejemploBackend.servicio;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +33,7 @@ import mx.uam.tsis.ejemploBackend.negocio.modelo.Alumno;
  * @author aaron
  *
  */
-@SuppressWarnings("unused")
+
 @RestController
 @RequestMapping("/v2") // Versionamiento
 @Slf4j //logging
@@ -45,11 +42,17 @@ public class AlumnoController {
 	@Autowired
 	private AlumnoService alumnoService; 
 	
+	/**
+	 * 
+	 * @param nuevoAlumno Este nuevo alumno es un objeto json
+	 * @return si el alumno se creo regresa un status y al alumno creado
+	 * @return si el alumno no se puede crear se regresa un status de bad_request y un mensaje advirtiendo que no se puede
+	 */
 	@ApiOperation(
 			value = "Nos permite crear un nuevo alumno",
 			notes = "Al crear al nuevo alumno la matricula debe ser única"
 			)// Documentación del api
-	@PostMapping(path = "/alumnos", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/alumnos", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(@RequestBody @Valid Alumno nuevoAlumno) {   //validaciones
 		
 		log.info("REcibi llamada a create(claseAlumnoControllr) con" + nuevoAlumno + "se los paso al metodo creat()de la clase ALumnoService");
@@ -69,24 +72,34 @@ public class AlumnoController {
 		 
 	}
 	
+	/**
+	 * 
+	 * @return todos los alumnos en la BD junto con su status
+	 */
+	@ApiOperation(
+			value = "Nos permite obtener todos los alumos")// Documentación del api
 	@GetMapping(path = "/alumnos", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> retieveAll() {
-		List <Alumno> result = alumnoService.retrieveAll();
+		Iterable <Alumno> result = alumnoService.retrieveAll();
 		//log.info("Mostrando todos los objetos alumno" + alumnoRespository.values() );
 		//en el cuerpo de la invocacion (body) regresame la lista alumnos diciendole al hasmap dame tus valores 
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 		
 	}
 	
+	@ApiOperation(
+			value = "Nos permite obtener un nuevo alumno mediante su matricula",
+			notes = "La matricula nos permitirá buscar al alumno"
+			)// Documentación del api
 	@GetMapping(path = "/alumnos/{matricula}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity <?> retrieve(@PathVariable ("matricula")  @Valid Integer matricula) {
 		log.info("Buscando al alumno con matricula "+matricula + "Le mando la orden a alumnoService");
 		
-		Alumno alumno = alumnoService.retrieveByMatricula(matricula);
+		Optional<Alumno> alumnoOpt = alumnoService.retrieveByMatricula(matricula);
 		
-		if(alumno != null) {
+		if(!alumnoOpt.isPresent()) {
 			log.info("Alumno con la matricula: " + matricula + "se encontro en la clase AlumnoController");
-			return ResponseEntity.status(HttpStatus.OK).body(alumno);
+			return ResponseEntity.status(HttpStatus.OK).body(alumnoOpt);
 		} else {
 			log.info("Alumno no encotrado");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -103,7 +116,10 @@ public class AlumnoController {
 	 * @return una respuesta con status OK si se actualizó el alumno.
 	 * @return CONFLICT si no se pudo actualizar
 	 */
-
+	@ApiOperation(
+			value = "Nos permite actualizar un nuevo alumno",
+			notes = "Al actualizar alumno no se debe modificar la matricula"
+			)// Documentación del api
 	@PutMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> update(@PathVariable("matricula") @Valid Integer matricula, @RequestBody @Valid Alumno alumnoActualizado){
 		log.info("Le digo a AlumnoService que haga una actualizacion con estos nuevos datos: " + alumnoActualizado + " con la matricula: " + matricula);
@@ -121,12 +137,18 @@ public class AlumnoController {
 	 * @return un OK si se eliminó el alumno
 	 * @return un NOT_FOUND si es que no se encontraba
 	 */
-	@DeleteMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	
+	@ApiOperation(
+			value = "Nos permite eliminar a un alumno",
+			notes = "Mediante su matricula"
+			)// Documentación del api
+	@DeleteMapping(path = "/alumnos/{matricula}")
 	public ResponseEntity<?> delete(@PathVariable("matricula") @Valid Integer matricula) {
 		log.info("Borrando al alumno con matricula "+matricula + "Le paso la orden a AlumnoService");
+		boolean retval;
 		//Alumno alumno = alumnoRespository.get(matricula);
-		Alumno alumno = alumnoService.delete(matricula);
-		if(alumno != null) {
+		retval = alumnoService.delete(matricula);
+		if(!retval) {
 			return ResponseEntity.status(HttpStatus.OK).build();
 		}else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alumno con la matricula: " + matricula + " no encontrado ");

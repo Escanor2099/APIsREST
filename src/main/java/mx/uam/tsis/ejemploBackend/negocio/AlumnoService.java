@@ -1,10 +1,9 @@
 package mx.uam.tsis.ejemploBackend.negocio;
 
 
+import java.util.Optional;
 
-
-
-import java.util.List;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,30 +35,35 @@ public class AlumnoService {
 		
 		//Regla de negocio, no se puede crearl el mismo 
 		//alunno con la misma matricula
-		Alumno alumno = alumnoRepository.findByMatricula(nuevoAlumno.getMatricula());
+		Optional<Alumno> alumnoOpt = alumnoRepository.findById(nuevoAlumno.getMatricula());
 		
-		if(alumno== null) {
+		if(!alumnoOpt.isPresent()) {
 			return alumnoRepository.save(nuevoAlumno);
 		}else {
 			return null;
 		}
 	}
 	
-	public List <Alumno> retrieveAll(){
-		return alumnoRepository.find();
+	/**
+	 * 
+	 * @return regresa todo lo que encuentre en el Repository
+	 */
+	public Iterable <Alumno> retrieveAll(){
+		return alumnoRepository.findAll();
 	}
 	
 	/**
 	 * 
 	 * @param matricula
-	 * @return si el alumno existe lo regresa y sino null
+	 * @return si el alumno existe lo regresa
+	 * @return null si no se encontró el alumno
 	 */
-	public Alumno retrieveByMatricula(Integer matricula) {
-		Alumno alumno = alumnoRepository.findByMatricula(matricula);
+	public Optional<Alumno> retrieveByMatricula(Integer matricula) {
+		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
 		
-		if(alumno != null) {
+		if(!alumnoOpt.isPresent()) {
 			log.info("Se encontro al alumno con la matricula: " + matricula);
-			return alumnoRepository.findByMatricula(matricula);
+			return alumnoRepository.findById(matricula);
 			
 		}else {
 			return null;
@@ -67,29 +71,43 @@ public class AlumnoService {
 		
 	}
 	
+	/**
+	 * 
+	 * @param matricula, recibe un id para buscar
+	 * @param alumnoActualizado, recibe el json con los datos a actualiza
+	 * @return null si el alumno no está presente 
+	 */
+	@Transactional
 	public Alumno update(Integer matricula, Alumno alumnoActualizado) {
 		//primero buscamos a ver si esta el alumno
 		log.info("Antes de actualizar verifico que el alumno con matricula: " + matricula + " existe");
-		Alumno alumno = alumnoRepository.findByMatricula(matricula);
+		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
 		
-		if (alumno != null) {
+		Alumno alumno = alumnoOpt.get();
+		if (alumnoOpt.isPresent()) {
 			log.info("Si existe lo procedemos a aactualizar con los datos: " + alumnoActualizado);
-			return alumnoRepository.update(matricula, alumnoActualizado);
+			return alumnoRepository.save(alumno);
 		}else {
 			log.info("Si no existe entonces, null");
 			return null;
 		}
 	}
 	
-	public Alumno delete(Integer matricula) {
+	/**
+	 * 
+	 * @param matricula, 
+	 * @return
+	 */
+	public boolean delete(Integer matricula) {
 		log.info("Buscando al alumno con matriucula: " + matricula + " para borrarlo");
-		Alumno alumno = alumnoRepository.findByMatricula(matricula);
+		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
 		
-		if(alumno != null) {
-			log.info("Alumno con matricula: " + alumno + " procediendo a borrar");
-			return alumnoRepository.delete(matricula);
+		if(alumnoOpt.isPresent()) {
+			log.info("Alumno con matricula: " + alumnoOpt + " procediendo a borrar");
+			alumnoRepository.delete(alumnoOpt.get());
+			return true;
 		} else {
-			return null;
+			return false;
 		}
 	}
 }
