@@ -36,7 +36,7 @@ public class Grupo {
 	private String clave;
 	
 	@Builder.Default
-	@OneToMany
+	@OneToMany //especifica la asociacion un gruppo puede tener de uno a muchos alumnos
 	private List <Alumno> alumnos = new ArrayList<>();
 }
 
