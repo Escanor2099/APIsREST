@@ -3,7 +3,9 @@ package mx.uam.tsis.ejemploBackend.negocio.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -36,7 +38,11 @@ public class Grupo {
 	private String clave;
 	
 	@Builder.Default
-	@OneToMany //especifica la asociacion un gruppo puede tener de uno a muchos alumnos
+	@OneToMany(targetEntity = Alumno.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE) //especifica la asociacion un gruppo puede tener de uno a muchos alumnos
 	private List <Alumno> alumnos = new ArrayList<>();
+	
+	public boolean addALumno(Alumno alumno) {
+		return alumnos.add(alumno);
+	}
 }
 

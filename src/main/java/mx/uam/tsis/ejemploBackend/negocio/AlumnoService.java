@@ -58,12 +58,13 @@ public class AlumnoService {
 	 * @return si el alumno existe lo regresa
 	 * @return null si no se encontró el alumno
 	 */
-	public Optional<Alumno> retrieveByMatricula(Integer matricula) {
+	public Alumno retrieveByMatricula(Integer matricula) {
 		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
+		log.info("alumnoOpt es: " + alumnoOpt);
 		
-		if(!alumnoOpt.isPresent()) {
+		if(alumnoOpt.isPresent()) {
 			log.info("Se encontro al alumno con la matricula: " + matricula);
-			return alumnoRepository.findById(matricula);
+			return alumnoOpt.get();
 			//return alumnoRepository.findById(matricula);
 			
 		}else {

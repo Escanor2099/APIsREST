@@ -1,7 +1,7 @@
 package mx.uam.tsis.ejemploBackend.servicio;
 
 
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -35,7 +35,7 @@ import mx.uam.tsis.ejemploBackend.negocio.modelo.Alumno;
  */
 
 @RestController
-@RequestMapping("/v2") // Versionamiento
+@RequestMapping("/v4") // Versionamiento
 @Slf4j //logging
 public class AlumnoController {
 	
@@ -95,11 +95,11 @@ public class AlumnoController {
 	public ResponseEntity <?> retrieve(@PathVariable ("matricula")  @Valid Integer matricula) {
 		log.info("Buscando al alumno con matricula "+matricula + "Le mando la orden a alumnoService");
 		
-		Optional<Alumno> alumnoOpt = alumnoService.retrieveByMatricula(matricula);
+		Alumno alumno = alumnoService.retrieveByMatricula(matricula);
 		
-		if(!alumnoOpt.isPresent()) {
-			log.info("Alumno con la matricula: " + matricula + "se encontro en la clase AlumnoController");
-			return ResponseEntity.status(HttpStatus.OK).body(alumnoOpt);
+		if(alumno != null) {
+			log.info("Este es el Alumno con la matricula: " + matricula + " que se encontró");
+			return ResponseEntity.status(HttpStatus.OK).body(alumno);
 		} else {
 			log.info("Alumno no encotrado");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
