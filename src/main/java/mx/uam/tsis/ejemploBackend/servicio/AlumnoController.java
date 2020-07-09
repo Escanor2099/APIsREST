@@ -43,10 +43,12 @@ public class AlumnoController {
 	private AlumnoService alumnoService; 
 	
 	/**
-	 * 
+	 * CREATE
+	 * Metodo que nos permite crear un nuevo alumno ingresando un objeto JSON de tipo Alumno
 	 * @param nuevoAlumno Este nuevo alumno es un objeto json
 	 * @return si el alumno se creo regresa un status y al alumno creado
-	 * @return si el alumno no se puede crear se regresa un status de bad_request y un mensaje advirtiendo que no se puede
+	 * @return si el alumno no se puede crear se regresa un status de bad_request y un mensaje advirtiendo que no se puede crear
+	 * porque ya existe en la BD
 	 */
 	@ApiOperation(
 			value = "Nos permite crear un nuevo alumno",
@@ -61,19 +63,15 @@ public class AlumnoController {
 		
 		if(alumno != null) {
 			return ResponseEntity.status(HttpStatus.CREATED).body(alumno);
-
 		}else {
 			// build para construir el objeto
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede crear alumno porque ya existe");
-
-		}
-		
-	
-		 
+		}	 
 	}
 	
 	/**
-	 * 
+	 * RETRIEVEALL
+	 * Metodo que nos mnuestra a los alumnos presentes en la BD
 	 * @return todos los alumnos en la BD junto con su status
 	 */
 	@ApiOperation(
@@ -87,6 +85,12 @@ public class AlumnoController {
 		
 	}
 	
+	/**
+	 * RETRIEVEBYID
+	 * Metodo que nos regresa el alumno que se quiere buscar mediante una matricula
+	 * @param matricula
+	 * @return
+	 */
 	@ApiOperation(
 			value = "Nos permite obtener un nuevo alumno mediante su matricula",
 			notes = "La matricula nos permitirá buscar al alumno"
@@ -105,20 +109,19 @@ public class AlumnoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			
 		}
-		
-		
 	}
 	
 	/**
-	 * 
+	 * UPDATE
+	 * Método que nos permite actualizar el nombre y la carrera de un alumno
 	 * @param matricula
 	 * @param alumnoActualizado
 	 * @return una respuesta con status OK si se actualizó el alumno.
 	 * @return CONFLICT si no se pudo actualizar
 	 */
 	@ApiOperation(
-			value = "Nos permite actualizar un nuevo alumno",
-			notes = "Al actualizar alumno no se debe modificar la matricula"
+			value = "Nos permite actualizar un alumno, este será identificado por su matricula",
+			notes = "Al actualizar alumno no se puede modificar la matricula"
 			)// Documentación del api
 	@PutMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> update(@PathVariable("matricula") @Valid Integer matricula, @RequestBody @Valid Alumno alumnoActualizado){
@@ -132,12 +135,12 @@ public class AlumnoController {
 	}
 	
 	/**
-	 * 
+	 * DELETE
+	 * Este metodo nos permite eliminar a un alumno de la BD mediante su parametro matricula
 	 * @param matricula
 	 * @return un OK si se eliminó el alumno
-	 * @return un NOT_FOUND si es que no se encontraba
+	 * @return un NOT_FOUND si es que no se encontraba el alumno en la BD
 	 */
-	
 	@ApiOperation(
 			value = "Nos permite eliminar a un alumno",
 			notes = "Mediante su matricula"

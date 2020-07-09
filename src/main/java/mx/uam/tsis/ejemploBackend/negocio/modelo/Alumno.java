@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 /**
  * Capa de modelo de dominio
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @Entity //esta anotacion le informa a la BD que esta clase es una entidad y que hay que persistir en la BD
+@EqualsAndHashCode
 public class Alumno {
 	
 	@NotNull

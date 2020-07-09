@@ -1,4 +1,4 @@
-package mx.uam.tsis.ejemploBackend.negocio;
+ package mx.uam.tsis.ejemploBackend.negocio;
 
 
 import java.util.Optional;
@@ -38,7 +38,15 @@ public class AlumnoService {
 		Optional<Alumno> alumnoOpt = alumnoRepository.findById(nuevoAlumno.getMatricula());
 		
 		if(!alumnoOpt.isPresent()) {
-			return alumnoRepository.save(nuevoAlumno);
+			
+			log.info("Voy a guardar a alumno " + nuevoAlumno);
+			
+			Alumno returnAlumno = alumnoRepository.save(nuevoAlumno);
+			
+			log.info("Voy a regresar a alumno " + returnAlumno);
+			
+			return returnAlumno;
+			
 		}else {
 			return null;
 		}
@@ -96,9 +104,11 @@ public class AlumnoService {
 	}
 	
 	/**
-	 * 
-	 * @param matricula, 
-	 * @return
+	 * DELETE
+	 * Método en la clase AlumnoService que nos permite acceder a la base de datos (respetando logica de negocios)
+	 * y nos permite eliminar a un alumno que fue buscado previamente por su matricula.
+	 * @param matricula, Se le pas por parametro la matricula del alumno que se quiere eliminar
+	 * @return Regresa un booleano, true si se borró, false si no exisistia ese alumno con dicha matricula
 	 */
 	public boolean delete(Integer matricula) {
 		log.info("Buscando al alumno con matriucula: " + matricula + " para borrarlo");
