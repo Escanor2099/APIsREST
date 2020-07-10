@@ -25,7 +25,9 @@ public class AlumnoService {
 	private AlumnoRepository alumnoRepository;
 	
 	/**
-	 * 
+	 * CREATE
+	 * Método que permite persistir un nuevo alumno en la BD si es que se cumple
+	 * con su logica de negocios
 	 * @param nuevoAlumno
 	 * @return el aluo que sse acaba de crear si la creacion es exitosa
 	 * null de lo contrario
@@ -53,7 +55,8 @@ public class AlumnoService {
 	}
 	
 	/**
-	 * 
+	 * RETRIEVE ALL
+	 * Método que nos regresa todos aquellos alumnos que esten en la BD
 	 * @return regresa todo lo que encuentre en el Repository
 	 */
 	public Iterable <Alumno> retrieveAll(){
@@ -61,7 +64,9 @@ public class AlumnoService {
 	}
 	
 	/**
-	 * 
+	 * RETRIEVE BY MATRICULA
+	 * Método que nos permite regresar a un alumno en especifico
+	 * por medio de su matricula
 	 * @param matricula
 	 * @return si el alumno existe lo regresa
 	 * @return null si no se encontró el alumno
@@ -78,11 +83,12 @@ public class AlumnoService {
 		}else {
 			return null;
 		}
-		
 	}
 	
 	/**
-	 * 
+	 * UPDATE
+	 * Método que nos permite actualizar los valores de un alumno (excepto su matricula) debidamente identificado
+	 * por medio de su matricula
 	 * @param matricula, recibe un id para buscar
 	 * @param alumnoActualizado, recibe el json con los datos a actualiza
 	 * @return null si el alumno no está presente 
@@ -90,9 +96,9 @@ public class AlumnoService {
 	@Transactional
 	public Alumno update(Integer matricula, Alumno alumnoActualizado) {
 		//primero buscamos a ver si esta el alumno
-		log.info("Antes de actualizar verifico que el alumno con matricula: " + matricula + " existe");
+		log.info("Antes de actualizar verifico que el alumno con matricula: " + matricula + " exista");
 		Optional<Alumno> alumnoOpt = alumnoRepository.findById(matricula);
-		
+		log.info("El alumno antes d actualizar:  " + alumnoOpt.get());
 		//Alumno alumno = alumnoOpt.get();
 		if (alumnoOpt.isPresent()) {
 			log.info("Si existe lo procedemos a aactualizar con los datos: " + alumnoActualizado);

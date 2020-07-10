@@ -28,7 +28,7 @@ import mx.uam.tsis.ejemploBackend.negocio.modelo.Grupo;
  *
  */
  @RestController
- @RequestMapping("/v4") // Versionamiento
+ @RequestMapping("/v5") // Versionamiento
  @Slf4j //logging
 public class GrupoController {
 	 
@@ -36,14 +36,16 @@ public class GrupoController {
 	 private GrupoService grupoService;
 	 
 	 @ApiOperation(value = "Nos permite crear un nuevo grupo")// Documentación del api
-	 @PostMapping(path = "/grupos", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	 @PostMapping(path = "/grupos", consumes = MediaType.APPLICATION_JSON_VALUE)
 	 public ResponseEntity<?> create(@RequestBody @Valid Grupo nuevoGrupo) {   //validaciones
 			
 			log.info("REcibi llamada a create(clase GrupoController) con" + nuevoGrupo + "se los paso al metodo creat()de la clase GrupoService");
 			
 			Grupo grupo = grupoService.create(nuevoGrupo);
 			
+			
 			if(grupo != null) {
+				//log.info("L que grupo tiene es: " + ResponseEntity.status(HttpStatus.CREATED).body(grupo));
 				return ResponseEntity.status(HttpStatus.CREATED).body(grupo);
 
 			}else {
@@ -107,12 +109,12 @@ public class GrupoController {
 				)// Documentación del api
 		@PutMapping(path = "/grupos/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<?> update(@PathVariable("id") @Valid Integer id, @RequestBody @Valid Grupo grupoActualizado){
-			log.info("Le digo a AlumnoService que haga una actualizacion con estos nuevos datos: " + grupoActualizado + " con el id: " + id);
+			log.info("Le digo a GrupoService que haga una actualizacion con estos nuevos datos: " + grupoActualizado + " con el id: " + id);
 			Grupo grupo = grupoService.update(id, grupoActualizado);
 			if(grupo != null) {
-				return ResponseEntity.status(HttpStatus.OK).build(); 
+				return ResponseEntity.status(HttpStatus.OK).body(grupo); 
 			}else {
-				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+				return ResponseEntity.status(HttpStatus.CONFLICT).body("no hay grupo que actualizar");
 			}
 		}
 		
@@ -137,6 +139,7 @@ public class GrupoController {
 		}
 		
 		/**
+		 * ADD STUDENT TO GROUP
 		 * EL parametro El parametro id de grupo lo agarramos como @PathVariable
 		 * y se lo asignamos a  a id
 		 * @param id

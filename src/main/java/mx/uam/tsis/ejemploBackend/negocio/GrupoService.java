@@ -39,9 +39,12 @@ public class GrupoService {
 	 * @return 
 	 */
 	public Grupo create(Grupo nuevoGrupo) {
-		log.info("estoy en la clase GrupoService creando un nuevo grupo con los datos: " + nuevoGrupo);
+		log.info("estoy en la clase GrupoService persistiendo un nuevo grupo con los datos: " + nuevoGrupo);
 		//log.info("Lo que se regresa es esto: " + grupoRepository.save(nuevoGrupo));
-		return grupoRepository.save(nuevoGrupo);
+		//Grupo grupoReturn = grupoRepository.save(nuevoGrupo);
+		Grupo grupoReturn = grupoRepository.save(nuevoGrupo);
+		log.info("Lo que se va a retornar es: " + grupoReturn);
+		return grupoReturn;
 	}
 	
 	/**
@@ -86,11 +89,13 @@ public class GrupoService {
 		//primero buscamos a ver si esta el alumno
 		log.info("Antes de actualizar verifico que el alumno con matricula: " + idGrupo + " existe");
 		Optional<Grupo> optGrupo = grupoRepository.findById(idGrupo);
+		log.info("Esto es el grupo que se regresa con el id del grupo que se quiere buscar, el valor de optGroup es: "+optGrupo);
 		
 		if (optGrupo.isPresent()) {
+			Grupo grupoReturn = grupoRepository.save(grupoActualizado);
 			log.info("Si existe lo procedemos a aactualizar con los datos: " + grupoActualizado);
-			log.info("Esto es lo que se regresa " + grupoRepository.save(grupoActualizado));
-			return grupoRepository.save(grupoActualizado);
+			log.info("Esto es lo que se regresa al actualizar en la BD " + grupoReturn);
+			return grupoReturn;
 		}else {
 			log.info("Si no existe entonces, null");
 			return null;
@@ -113,6 +118,7 @@ public class GrupoService {
 			grupoRepository.deleteById(id);
 			return true;
 		} else {
+			log.info("No se encontró el grupo a borrar");
 			return false;
 		}
 	}

@@ -35,7 +35,7 @@ import mx.uam.tsis.ejemploBackend.negocio.modelo.Alumno;
  */
 
 @RestController
-@RequestMapping("/v4") // Versionamiento
+@RequestMapping("/v5") // Versionamiento
 @Slf4j //logging
 public class AlumnoController {
 	
@@ -122,8 +122,8 @@ public class AlumnoController {
 	@ApiOperation(
 			value = "Nos permite actualizar un alumno, este será identificado por su matricula",
 			notes = "Al actualizar alumno no se puede modificar la matricula"
-			)// Documentación del api
-	@PutMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+			)// Documentación del api                                                //produces = MediaType.APPLICATION_JSON_VALUE
+	@PutMapping(path = "/alumnos/{matricula}", consumes = MediaType.APPLICATION_JSON_VALUE )
 	public ResponseEntity<?> update(@PathVariable("matricula") @Valid Integer matricula, @RequestBody @Valid Alumno alumnoActualizado){
 		log.info("Le digo a AlumnoService que haga una actualizacion con estos nuevos datos: " + alumnoActualizado + " con la matricula: " + matricula);
 		Alumno alumno = alumnoService.update(matricula, alumnoActualizado);
